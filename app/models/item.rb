@@ -8,8 +8,16 @@ class Item < ActiveRecord::Base
   scope :sellable, -> { where(status: 'sellable') }
 
   def clearance!
-    update_attributes!(status: 'clearanced', 
+    update_attributes!(status: 'clearanced',
                        price_sold: style.wholesale_price * CLEARANCE_PRICE_PERCENTAGE)
   end
+
+  def as_json(options={})
+  super(:only => [:id,:size,:color,:state],
+        :include => {
+          :style => {:only => [:type,:name]}
+        }
+  )
+end
 
 end

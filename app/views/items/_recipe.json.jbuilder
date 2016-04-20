@@ -1,4 +1,5 @@
-json.(item,
+json.extract!(
+  item,
   :id,
   :size,
   :color,
@@ -10,3 +11,4 @@ json.(item,
   :updated_at,
   :clearance_batch_id
 )
+json.style item.style
