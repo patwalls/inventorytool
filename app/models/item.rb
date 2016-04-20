@@ -12,11 +12,14 @@ class Item < ActiveRecord::Base
                        price_sold: style.wholesale_price * CLEARANCE_PRICE_PERCENTAGE)
   end
 
+  def style_type() style.type end
+  def style_name() style.name end
+  def style_wholesale_price() style.wholesale_price end
+  def style_retail_price() style.retail_price end
+
   def as_json(options={})
-  super(:only => [:id,:size,:color,:state],
-        :include => {
-          :style => {:only => [:type,:name]}
-        }
+  super(:only => [:id,:size,:color,:price_sold,:sold_at],
+        :methods => [:style_type,:style_name,:style_wholesale_price,:style_retail_price,:clearance_batch]
   )
 end
 
