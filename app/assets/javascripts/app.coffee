@@ -1,44 +1,23 @@
 receta = angular.module('receta',[
   'templates',
   'ngRoute',
+  'ngResource',
   'controllers',
+  'services'
 ])
 
-receta.config([ '$routeProvider',
-  ($routeProvider)->
+receta.config([ '$routeProvider','$httpProvider',
+  ($routeProvider,$httpProvider)->
     $routeProvider
-      .when('/',
+      .when '/',
         templateUrl: "index.html"
-        controller: 'RecipesController'
-      )
+        controller: 'ItemsController'
+      .when '/:id',
+        templateUrl: "batch.html"
+        controller: 'BatchController'
+
 ])
 
-recipes = [
-  {
-    id: 1
-    name: 'Baked Potato w/ Cheese'
-  },
-  {
-    id: 2
-    name: 'Garlic Mashed Potatoes',
-  },
-  {
-    id: 3
-    name: 'Potatoes Au Gratin',
-  },
-  {
-    id: 4
-    name: 'Baked Brussel Sprouts',
-  },
-]
+
+services = angular.module('services',[])
 controllers = angular.module('controllers',[])
-controllers.controller("RecipesController", [ '$scope', '$routeParams', '$location',
-  ($scope,$routeParams,$location)->
-    $scope.search = (keywords)->  $location.path("/").search('keywords',keywords)
-
-    if $routeParams.keywords
-      keywords = $routeParams.keywords.toLowerCase()
-      $scope.recipes = recipes.filter (recipe)-> recipe.name.toLowerCase().indexOf(keywords) != -1
-    else
-      $scope.recipes = []
-])

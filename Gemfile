@@ -5,6 +5,7 @@ gem "sqlite3"
 gem "sass-rails"
 gem "uglifier"
 gem "coffee-rails"
+gem 'coffee-script-source'
 gem "jquery-rails"
 gem "bootstrap-sass"
 gem "bower-rails"
@@ -18,4 +19,6 @@ group :test, :development do
   gem "ruby_css_lint"
   gem "selenium-webdriver"
   gem "pry-rails"
+  gem 'teaspoon-jasmine'
+  gem 'phantomjs'
 end
