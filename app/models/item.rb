@@ -18,8 +18,8 @@ class Item < ActiveRecord::Base
   def style_retail_price() style.retail_price end
 
   def as_json(options={})
-  super(:only => [:id,:size,:color,:price_sold,:sold_at],
-        :methods => [:style_type,:style_name,:style_wholesale_price,:style_retail_price,:clearance_batch]
+  super(:only => [:id,:size,:color,:price_sold,:sold_at,:clearance_batch_id],
+        :methods => [:style_type,:style_name,:style_wholesale_price,:style_retail_price]
   )
 end
 

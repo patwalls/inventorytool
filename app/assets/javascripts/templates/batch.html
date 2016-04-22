@@ -1,1 +1,18 @@
-<p> {{ batchId }} </p>
+<button ng-click='goToIndex()'>All Items</button>
+<h1> Batch {{ batchId }} </h1>
+<table class='table'>
+  <thead>
+    <tr>
+      <th ng-repeat = "(key,value) in items[0]" ng-click="sortGroup(key)" style="color:{{sortSelect == key ? 'red' : 'black'}}"> {{ key }}</th>
+      <th>Delete From Batch</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="item in items | orderBy: sortSelect | filter:{ 'clearance_batch_id': batchId }">
+        <td ng-repeat="value in item">
+          {{ value }}
+        </td>
+        <td><button ng-click="unClearanceItem(item.id)">X</button></td>
+    </tr>
+  </tbody>
+</table>

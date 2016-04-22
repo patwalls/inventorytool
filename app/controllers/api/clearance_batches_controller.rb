@@ -1,4 +1,4 @@
-class ClearanceBatchesController < ApplicationController
+class Api::ClearanceBatchesController < ApplicationController
 
   def index
     @clearance_batches  = ClearanceBatch.all

@@ -1,4 +1,4 @@
-class StyleController < ApplicationController
+class Api::StyleController < ApplicationController
   def index
     @styles = Style.all
     render json: @styles

@@ -2,17 +2,22 @@
   <option ng-repeat = "(key,value) in items[0]"> {{ key }}</option>
 
 </select> -->
+<label>Search: <input ng-model="searchText"></label>
 <table class='table'>
   <thead>
     <tr>
       <th ng-repeat = "(key,value) in items[0]" ng-click="sortGroup(key)" style="color:{{sortSelect == key ? 'red' : 'black'}}"> {{ key }}</th>
+      <th>Batch</th>
+      <th>Add To Batch</th>
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="item in items | orderBy: sortSelect">
+    <tr ng-repeat="item in items | orderBy: sortSelect | filter:{ 'id': searchText }">
         <td ng-repeat="value in item">
           {{ value }}
         </td>
+        <td ng-click='changeView(item.clearance_batch_id)'> {{ item.clearance_batch_id }} </td>
+        <td><button ng-click="clearanceItem(item.id,'1')">Add {{ item.id }}</button></td>
     </tr>
   </tbody>
 </table>
