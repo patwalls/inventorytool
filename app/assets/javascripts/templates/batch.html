@@ -3,6 +3,8 @@
 <h2> {{ getBatchStatus(batchId) }} </h2>
 <label>Add Item to Batch: <input ng-model="itemToAdd"></label>
 <button ng-click='clearanceItem(itemToAdd,batchId)'>Add</button>
+<button ng-click='submitBatch(batchId)'>Submit Batch</button>
+<button type="button" ng-csv='itemsInBatch(batchId)' filename="test.csv">Export</button>
 <table class='table'>
   <thead>
     <tr>

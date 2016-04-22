@@ -5,12 +5,14 @@
   <%= stylesheet_link_tag    'application', media: 'all' %>
   <%= javascript_include_tag 'application' %>
   <%= csrf_meta_tags %>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-csv/0.3.6/ng-csv.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.5.5/angular-sanitize.min.js"></script>
 </head>
 <body>
 
 <div class="container">
   <h1>Stitch Fix Clearance Tool</h1>
-    
+
 
   <%- if flash[:notice] -%>
     <div class="alert alert-info" role="alert">

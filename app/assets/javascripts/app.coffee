@@ -3,7 +3,9 @@ receta = angular.module('receta',[
   'ngRoute',
   'ngResource',
   'controllers',
-  'services'
+  'services',
+  'ngSanitize',
+  'ngCsv'
 ])
 
 receta.config([ '$routeProvider','$httpProvider',

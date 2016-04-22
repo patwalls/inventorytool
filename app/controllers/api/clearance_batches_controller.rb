@@ -6,6 +6,18 @@ class Api::ClearanceBatchesController < ApplicationController
     render :json => @clearance_batches
   end
 
+  def show
+    @clearance_batch = ClearanceBatch.find(params[:id])
+    render :json => @clearance_batch
+  end
+
+  def update
+    @clearance_batch = ClearanceBatch.find(params[:id])
+    @clearance_batch.update_attributes(clearance_batch_params)
+    flash[:alert] = "Clearance Batch Added!!!!"
+    render nothing: true, status: 204
+  end
+
   def create
     if !params[:csv_batch_file]
       @batch = ClearanceBatch.new
@@ -27,6 +39,12 @@ class Api::ClearanceBatchesController < ApplicationController
       flash[:alert] = alert_messages.join("<br/>") if alert_messages.any?
       redirect_to action: :index
     end
+  end
+
+  private
+
+  def clearance_batch_params
+    params.require(:clearance_batch).permit(:id, :submitted)
   end
 
 end

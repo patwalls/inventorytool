@@ -19,8 +19,9 @@ controllers.controller("ItemsController", [ '$scope', '$routeParams', '$location
       $scope.entry = Item.get({ id: scopeId }, function() {
         $scope.entry.clearance_batch_id = batchId;
         $scope.entry.$update(function(data) {
-          console.log('this was a success')
-          $scope.items[scopeId - 1] = $scope.entry;
+          $scope.entry = Item.get({ id: scopeId }, function() {
+            $scope.items[scopeId - 1] = $scope.entry;
+          });
         },function(error) {
           console.log(error)
           });
@@ -47,7 +48,12 @@ controllers.controller("BatchController", [ '$scope', '$routeParams', '$location
   ($scope,$routeParams,$location,$resource,Item,ClearanceBatch)->
     $scope.items = Item.all {}, () -> console.log($scope.items)
     $scope.clearance_batches = ClearanceBatch.all {}, () -> console.log($scope.clearance_batches)
-
+    `
+      $scope.exportData = function () {
+        console.log('a test')
+         alasql('SELECT * INTO XLSX("mydata.xlsx",{headers:true}) FROM ?',[$scope.testItems]);
+      };
+      $scope.testItems = [{a:1,b:10},{a:2,b:20},{a:3,b:30}];`
     `$scope.getBatchStatus = function(batchId) {
       var status = '';
       $scope.clearance_batches.forEach(function(batch) {
@@ -57,6 +63,27 @@ controllers.controller("BatchController", [ '$scope', '$routeParams', '$location
         });
         return status;
       }`
+
+    `$scope.itemsInBatch = function(batchId) {
+      var itemsInBatch = []
+      $scope.items.forEach(function(item) {
+          if (batchId == item.clearance_batch_id) {
+            itemsInBatch.push(item);
+          }
+        });
+        return itemsInBatch;
+      }`
+
+    `$scope.submitBatch = function(batchId) {
+      $scope.entry = ClearanceBatch.get({ id: batchId }, function() {
+        $scope.entry.submitted = 'true';
+        $scope.entry.$update(function(data) {
+          $scope.getBatchStatus;
+        },function(error) {
+          console.log(error)
+          });
+      });
+    }`
 
     `$scope.sortGroup = function(key) {
       $scope.sortSelect = key;
