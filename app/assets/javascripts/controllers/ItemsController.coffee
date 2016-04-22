@@ -46,8 +46,17 @@ controllers.controller("ItemsController", [ '$scope', '$routeParams', '$location
 controllers.controller("BatchController", [ '$scope', '$routeParams', '$location', '$resource', 'Item','ClearanceBatch'
   ($scope,$routeParams,$location,$resource,Item,ClearanceBatch)->
     $scope.items = Item.all {}, () -> console.log($scope.items)
+    $scope.clearance_batches = ClearanceBatch.all {}, () -> console.log($scope.clearance_batches)
 
-
+    `$scope.getBatchStatus = function(batchId) {
+      var status = '';
+      $scope.clearance_batches.forEach(function(batch) {
+          if (batchId == batch.id) {
+            batch.submitted ? status = 'Submitted' : status = 'In Progress';
+          }
+        });
+        return status;
+      }`
 
     `$scope.sortGroup = function(key) {
       $scope.sortSelect = key;
