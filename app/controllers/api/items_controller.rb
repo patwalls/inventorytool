@@ -13,6 +13,7 @@ class Api::ItemsController < ApplicationController
   def update
     @item = Item.find(params[:id])
     @item.update_attributes(item_params)
+    flash[:alert] = "Hello I am working!!!"
     render nothing: true, status: 204
   end
 

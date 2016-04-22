@@ -1,16 +1,25 @@
 
-controllers = angular.module 'controllers', ['itemService']
-controllers.controller("ItemsController", [ '$scope', '$routeParams', '$location', '$resource', 'Item'
-  ($scope,$routeParams,$location,$resource,Item,Style)->
+controllers = angular.module 'controllers', ['itemService','batchService']
+controllers.controller("ItemsController", [ '$scope', '$routeParams', '$location', '$resource', 'Item','ClearanceBatch'
+  ($scope,$routeParams,$location,$resource,Item,ClearanceBatch)->
     $scope.items = Item.all {}, () -> console.log($scope.items)
+    $scope.clearance_batches = ClearanceBatch.all {}, () -> console.log($scope.clearance_batches)
 
     `$scope.sortGroup = function(key) {
       $scope.sortSelect = key;
+      }`
+    `$scope.createNewBatch = function() {
+        $scope.entry = ClearanceBatch.create( function(data) {
+          console.log(data);
+          var batch = '/' + data.id;
+          $location.path(batch);
+          })
       }`
     `$scope.clearanceItem = function(scopeId,batchId) {
       $scope.entry = Item.get({ id: scopeId }, function() {
         $scope.entry.clearance_batch_id = batchId;
         $scope.entry.$update(function(data) {
+          console.log('this was a success')
           $scope.items[scopeId - 1] = $scope.entry;
         },function(error) {
           console.log(error)
@@ -21,6 +30,11 @@ controllers.controller("ItemsController", [ '$scope', '$routeParams', '$location
       var batch = '/' + batchId;
       $location.path(batchId);
     }`
+    `function FlashMessagesController($attrs) {
+      console.log('hello world')
+      this.notice = $attrs.notice;
+      this.alert  = $attrs.alert;
+    }`
 ])
 
     # $scope.clearanceItem = function() {
@@ -29,9 +43,12 @@ controllers.controller("ItemsController", [ '$scope', '$routeParams', '$location
     #   })`
 
 
-controllers.controller("BatchController", [ '$scope', '$routeParams', '$location', '$resource', 'Item'
-  ($scope,$routeParams,$location,$resource,Item)->
+controllers.controller("BatchController", [ '$scope', '$routeParams', '$location', '$resource', 'Item','ClearanceBatch'
+  ($scope,$routeParams,$location,$resource,Item,ClearanceBatch)->
     $scope.items = Item.all {}, () -> console.log($scope.items)
+
+
+
     `$scope.sortGroup = function(key) {
       $scope.sortSelect = key;
       }`

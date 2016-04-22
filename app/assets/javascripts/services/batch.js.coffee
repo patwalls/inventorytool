@@ -1,9 +1,9 @@
-receta = angular.module 'itemService', ['ngResource']
+receta = angular.module 'batchService', ['ngResource']
 
-receta.factory 'Item', ['$resource',
+receta.factory 'ClearanceBatch', ['$resource',
 
   ($resource) ->
-    $resource 'api/items/:id.json', {id: '@id'},
+    $resource 'api/clearance_batches/:id.json', {id: '@id'},
       all:
         isArray: true
       update:

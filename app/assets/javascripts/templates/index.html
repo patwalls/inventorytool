@@ -3,6 +3,7 @@
 
 </select> -->
 <label>Search: <input ng-model="searchText"></label>
+<button ng-click="createNewBatch()">Create New Batch</button>
 <table class='table'>
   <thead>
     <tr>
@@ -17,7 +18,12 @@
           {{ value }}
         </td>
         <td ng-click='changeView(item.clearance_batch_id)'> {{ item.clearance_batch_id }} </td>
-        <td><button ng-click="clearanceItem(item.id,'1')">Add {{ item.id }}</button></td>
+        <td>
+          <select ng-options="option for option in clearance_batches"
+            ng-model="selectedItem"
+            ng-change="clearanceItem(item.id , selectedItem)">
+          </select>
+        </td>
     </tr>
   </tbody>
 </table>

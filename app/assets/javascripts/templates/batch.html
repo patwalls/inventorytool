@@ -1,5 +1,7 @@
 <button ng-click='goToIndex()'>All Items</button>
 <h1> Batch {{ batchId }} </h1>
+<label>Add Item to Batch: <input ng-model="itemToAdd"></label>
+<button ng-click='clearanceItem(itemToAdd,batchId)'>Add</button>
 <table class='table'>
   <thead>
     <tr>

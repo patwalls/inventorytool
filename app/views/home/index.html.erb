@@ -1,5 +1,19 @@
 <div ng-app="receta">
   <div class="view-container">
-    <div ng-view class="view-frame animate-view"></div>
+    <div ng-controller="ItemsController"
+      data-notice="<%= flash[:notice] %>"
+      data-alert="<%= flash[:alert] %>">
+
+    <div class="alert alert-notice" ng-show="flash.notice">
+      {{ flash.notice }}
+    </div>
+
+    <div class="alert alert-danger" ng-show="flash.alert">
+      {{ flash.alert }}
+    </div>
+    <div ng-view class="view-frame animate-view">
+
+    </div>
+    </div>
   </div>
 </div>
