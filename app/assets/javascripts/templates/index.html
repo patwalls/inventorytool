@@ -2,6 +2,32 @@
   <option ng-repeat = "(key,value) in items[0]"> {{ key }}</option>
 
 </select> -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm">Small modal</button>
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Min Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="type in types">
+              <td>
+                {{ type.name }}
+              </td>
+              <td>
+                <input ng-click="updateMinPrice()" ng-model='type.min_price'>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 <label>Search: <input ng-model="searchText"></label>
 <button ng-click="createNewBatch()">Create New Batch</button>
 <table class='table'>

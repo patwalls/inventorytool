@@ -8,7 +8,7 @@ receta = angular.module('receta',[
   'ngCsv'
 ])
 
-receta.config([ '$routeProvider','$httpProvider',
+receta.config([ '$routeProvider','$httpProvider'
   ($routeProvider,$httpProvider)->
     $routeProvider
       .when '/',

@@ -1,4 +1,8 @@
-FactoryGirl.define do
+FactoryGirl.define do  factory :type do
+    name "MyString"
+min_price 1
+  end
+
 
   factory :clearance_batch do
 

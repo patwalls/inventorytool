@@ -1,10 +1,15 @@
 
-controllers = angular.module 'controllers', ['itemService','batchService']
-controllers.controller("ItemsController", [ '$scope', '$routeParams', '$location', '$resource', 'Item','ClearanceBatch'
-  ($scope,$routeParams,$location,$resource,Item,ClearanceBatch)->
+controllers = angular.module 'controllers', ['itemService','batchService','styleService','typeService']
+controllers.controller("ItemsController", [ '$scope', '$routeParams', '$location', '$resource', 'Item','ClearanceBatch','Style','Type'
+  ($scope,$routeParams,$location,$resource,Item,ClearanceBatch,Style,Type)->
     $scope.items = Item.all {}, () -> console.log($scope.items)
     $scope.clearance_batches = ClearanceBatch.all {}, () -> console.log($scope.clearance_batches)
-
+    $scope.types = Type.all {}, () -> console.log($scope.types)
+    `this.notice = $scope.notice;
+    this.alert  = $scope.alert;`
+    `$scope.updateMinPrice = function() {
+      console.log('this will update the price')
+      }`
     `$scope.sortGroup = function(key) {
       $scope.sortSelect = key;
       }`

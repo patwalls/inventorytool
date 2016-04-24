@@ -37,7 +37,7 @@ class Api::ClearanceBatchesController < ApplicationController
         clearancing_status.errors.each {|error| alert_messages << error }
       end
       flash[:alert] = alert_messages.join("<br/>") if alert_messages.any?
-      redirect_to action: :index
+      redirect_to "/#/" + ClearanceBatch.all.last.id.to_s
     end
   end
 

@@ -1,7 +1,7 @@
 class Api::StyleController < ApplicationController
   def index
-    @styles = Style.all
-    render json: @styles
+    @types = Style.getTypes
+    render json: @types
   end
 end
 

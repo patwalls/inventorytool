@@ -9,10 +9,18 @@ class Item < ActiveRecord::Base
 
   def clearance!
     update_attributes!(status: 'clearanced',
-                       price_sold: style.wholesale_price * CLEARANCE_PRICE_PERCENTAGE)
+                       price_sold: clearance_price)
   end
 
-  def style_type() style.type end
+  def clearance_price
+    if (style.wholesale_price * CLEARANCE_PRICE_PERCENTAGE) < style.min_price
+      return style.min_price
+    else
+      return (style.wholesale_price * CLEARANCE_PRICE_PERCENTAGE)
+    end
+  end
+
+  def style_type() style.type.name end
   def style_name() style.name end
   def style_wholesale_price() style.wholesale_price end
   def style_retail_price() style.retail_price end

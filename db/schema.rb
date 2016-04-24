@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160422231323) do
+ActiveRecord::Schema.define(version: 20160424012921) do
 
   create_table "clearance_batches", force: :cascade do |t|
     t.datetime "created_at"
@@ -36,11 +36,19 @@ ActiveRecord::Schema.define(version: 20160422231323) do
   create_table "styles", force: :cascade do |t|
     t.decimal  "wholesale_price"
     t.decimal  "retail_price"
-    t.string   "type"
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "min_price",       default: 2
+    t.integer  "type_id"
+  end
+
+  add_index "styles", ["type_id"], name: "index_styles_on_type_id"
+
+  create_table "types", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "min_price"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end
