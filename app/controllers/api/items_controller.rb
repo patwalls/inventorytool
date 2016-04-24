@@ -1,7 +1,15 @@
 class Api::ItemsController < ApplicationController
   skip_before_filter  :verify_authenticity_token
   def index
-    @items = Item.select("items.*,styles.*,types.name as type_name").joins(:style).joins(:type)
+    @items = Item.select("
+    items.*,
+    styles.name,
+    styles.wholesale_price,
+    styles.retail_price,
+    styles.id as style_id,
+    types.name as type_name
+    ")
+    .joins(:style,:type)
     render :json => @items
   end
 
