@@ -4,7 +4,7 @@
 
   <div class="view-container">
 
-    <div ng-controller="ItemsController"
+    <div
       data-notice="<%= flash[:notice] %>"
       data-alert="<%= flash[:alert] %>">
 
@@ -18,6 +18,19 @@
     <div ng-view class="view-frame animate-view">
 
     </div>
+    </div>
+    <div class="modal fade upload-file" tabindex="-1" role="dialog" aria-labelledby="small-modal">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <%= form_tag('/api/clearance_batches', multipart: true, class: 'form-inline', role: 'form') do %>
+            <div class="form-group">
+              <%= label_tag 'csv_batch_file', 'Select batch file' %>
+              <%= file_field_tag 'csv_batch_file', class: 'form-control' %>
+            </div>
+            <%= button_tag 'upload batch file', class: 'btn btn-primary' %>
+          <% end %>
+        </div>
+      </div>
     </div>
   </div>
 </div>

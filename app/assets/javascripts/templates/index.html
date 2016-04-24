@@ -1,36 +1,23 @@
-<!-- <select ng-model = "sortGroup">
-  <option ng-repeat = "(key,value) in items[0]"> {{ key }}</option>
+<!-- header -->
 
-</select> -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm">Small modal</button>
-
-<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <table>
-        <thead>
-          <tr>
-            <th>Type</th>
-            <th>Min Price</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="type in types">
-              <td>
-                {{ type.name }}
-              </td>
-              <td>
-                <input ng-click="updateMinPrice()" ng-model='type.min_price'>
-              </td>
-            </tr>
-        </tbody>
-      </table>
-    </div>
+<div class='custom-header'>
+  <div class="page-header">
+    <h1>Stitch Fix Clearance Tool <small></small></h1>
+  </div>
+  <button type="button" class="btn btn-lg btn-primary" ng-click="createNewBatch()">New Batch</button>
+  <div class="dropdown">
+      <button type="button" class="btn btn-lg dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></button>
+      <ul class="dropdown-menu" role="menu">
+          <li><a class="dropdown-item" data-toggle="modal" data-target=".min-prices">Update Minimum Prices</a></li>
+          <li><a class="dropdown-item" data-toggle="modal" data-target=".upload-file">Upload CSV File</a></li>
+      </ul>
   </div>
 </div>
-<label>Search: <input ng-model="searchText"></label>
-<button ng-click="createNewBatch()">Create New Batch</button>
-<table class='table'>
+
+<!-- table -->
+
+<input ng-model="searchText" type="text" class="form-control" placeholder="Search for items...">
+<table class='table table-striped table-hover table-bordered'>
   <thead>
     <tr>
       <th ng-repeat = "(key,value) in items[0]" ng-click="sortGroup(key)" style="color:{{sortSelect == key ? 'red' : 'black'}}"> {{ key }}</th>
@@ -53,3 +40,31 @@
     </tr>
   </tbody>
 </table>
+
+
+<!-- min price modal -->
+
+<div class="modal fade min-prices" tabindex="-1" role="dialog" aria-labelledby="small-modal">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Min Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="type in types">
+              <td>
+                {{ type.name }}
+              </td>
+              <td>
+                <input ng-change="updateMinPrice(type.id,type.min_price)" ng-model='type.min_price'>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

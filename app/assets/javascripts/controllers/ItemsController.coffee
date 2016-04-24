@@ -1,14 +1,22 @@
 
 controllers = angular.module 'controllers', ['itemService','batchService','styleService','typeService']
+
 controllers.controller("ItemsController", [ '$scope', '$routeParams', '$location', '$resource', 'Item','ClearanceBatch','Style','Type'
   ($scope,$routeParams,$location,$resource,Item,ClearanceBatch,Style,Type)->
     $scope.items = Item.all {}, () -> console.log($scope.items)
     $scope.clearance_batches = ClearanceBatch.all {}, () -> console.log($scope.clearance_batches)
     $scope.types = Type.all {}, () -> console.log($scope.types)
-    `this.notice = $scope.notice;
-    this.alert  = $scope.alert;`
-    `$scope.updateMinPrice = function() {
-      console.log('this will update the price')
+    `$scope.updateMinPrice = function(id,min_price) {
+      $scope.type = Type.get({ id: id }, function() {
+        $scope.type.min_price = min_price;
+        $scope.type.$update(function(data) {
+          console.log('success');
+          console.log(data);
+        },function(error) {
+          console.log(error)
+          });
+      });
+      console.log(id + ' - ' + min_price);
       }`
     `$scope.sortGroup = function(key) {
       $scope.sortSelect = key;
@@ -36,17 +44,7 @@ controllers.controller("ItemsController", [ '$scope', '$routeParams', '$location
       var batch = '/' + batchId;
       $location.path(batchId);
     }`
-    `function FlashMessagesController($attrs) {
-      console.log('hello world')
-      this.notice = $attrs.notice;
-      this.alert  = $attrs.alert;
-    }`
 ])
-
-    # $scope.clearanceItem = function() {
-    #   var entry = Item.get({ id: '1' }, function() {
-    #   console.log(entry);
-    #   })`
 
 
 controllers.controller("BatchController", [ '$scope', '$routeParams', '$location', '$resource', 'Item','ClearanceBatch'
@@ -96,9 +94,10 @@ controllers.controller("BatchController", [ '$scope', '$routeParams', '$location
     `$scope.batchId = $routeParams.id`
     `$scope.unClearanceItem = function(scopeId) {
       $scope.entry = Item.get({ id: scopeId }, function() {
-        $scope.entry.clearance_batch_id = null;
         $scope.entry.$update(function(data) {
-          $scope.items[scopeId - 1] = $scope.entry;
+          $scope.entry = Item.get({ id: scopeId }, function() {
+            $scope.items[scopeId - 1] = $scope.entry;
+          });
         },function(error) {
           console.log(error)
           });

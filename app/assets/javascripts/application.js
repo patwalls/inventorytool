@@ -19,3 +19,4 @@
 //= require angular-rails-templates
 //= require bootstrap-sprockets
 //= require_tree .
+//= require_self

@@ -11,14 +11,7 @@
 <body>
 
 <div class="container">
-  <h1>Stitch Fix Clearance Tool</h1>
-  <%= form_tag('/api/clearance_batches', multipart: true, class: 'form-inline', role: 'form') do %>
-    <div class="form-group">
-      <%= label_tag 'csv_batch_file', 'Select batch file' %>
-      <%= file_field_tag 'csv_batch_file', class: 'form-control' %>
-    </div>
-    <%= button_tag 'upload batch file', class: 'btn btn-primary' %>
-  <% end %>
+
   <!-- <%- if flash[:notice] -%>
     <div class="alert alert-info" role="alert">
       <%= flash[:notice].html_safe %>
