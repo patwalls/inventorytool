@@ -3,7 +3,7 @@ class Api::ItemsController < ApplicationController
   def index
     @items = Item.select("
     items.*,
-    styles.name,
+    styles.name as style_name,
     styles.wholesale_price,
     styles.retail_price,
     styles.id as style_id,
@@ -15,7 +15,11 @@ class Api::ItemsController < ApplicationController
 
   def show
     @item = Item.find(params[:id])
-    render :json => @item
+    if @item
+      render :json => @item
+    else
+      render :json => { :errors => @item.errors.full_messages }
+    end
   end
 
   def update
@@ -23,17 +27,14 @@ class Api::ItemsController < ApplicationController
     if @item && @item.status == 'sellable'
       @item.clearance!
       @item.update_attributes(item_params)
-      @item.save!
-      flash[:alert] = "Item #{@item.id} has been clearanced."
-    elsif @item && @item.status == 'clearanced'
+      render :json => Item.query_for_callback(params[:id])
+    elsif @item && @item.status == 'clearanced' && @item.clearance_batch.submitted == false
       @item.unclearance!
       @item.save!
-      flash[:alert] = "Item #{@item.id} has been unclearanced."
+      render :json => Item.query_for_callback(params[:id])
     else
-      flash[:alert] = "Item #{@item.id} could not be clearanced"
-      p flash[:alert]
+      render :json => { :errors => @item.errors.full_messages }
     end
-    render nothing: true, status: 204
   end
 
   private

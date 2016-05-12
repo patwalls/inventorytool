@@ -4,33 +4,29 @@
 
   <div class="view-container">
 
-    <div
-      data-notice="<%= flash[:notice] %>"
-      data-alert="<%= flash[:alert] %>">
-
-    <div class="alert alert-notice" ng-show="flash.notice">
-      {{ notice }}
-    </div>
-
-    <div class="alert alert-danger" ng-show="flash.alert">
-      {{ alert }}
-    </div>
     <div ng-view class="view-frame animate-view">
 
     </div>
     </div>
     <div class="modal fade upload-file" tabindex="-1" role="dialog" aria-labelledby="small-modal">
-      <div class="modal-dialog modal-sm">
+      <div class="modal-dialog modal-md">
         <div class="modal-content">
+          <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Upload Batch File</h4>
+        </div>
+        <div class="modal-body">
           <%= form_tag('/api/clearance_batches', multipart: true, class: 'form-inline', role: 'form') do %>
             <div class="form-group">
-              <%= label_tag 'csv_batch_file', 'Select batch file' %>
+              <%= label_tag 'csv_batch_file', 'Select Batch File:' %>
               <%= file_field_tag 'csv_batch_file', class: 'form-control' %>
             </div>
-            <%= button_tag 'upload batch file', class: 'btn btn-primary' %>
+            <%= button_tag 'Upload Batch File', class: 'btn btn-primary' %>
           <% end %>
+        </div>
         </div>
       </div>
     </div>
   </div>
+  
 </div>

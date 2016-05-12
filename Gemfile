@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 gem "rails", "~> 4"
-gem "sqlite3"
+gem "pg"
 gem "sass-rails"
 gem "uglifier"
 gem "coffee-rails"
@@ -10,6 +10,7 @@ gem "jquery-rails"
 gem "bootstrap-sass"
 gem "bower-rails"
 gem 'angular-rails-templates'
+gem 'rails_12factor'
 
 group :test, :development do
   gem "rspec-rails"
@@ -21,4 +22,9 @@ group :test, :development do
   gem "pry-rails"
   gem 'teaspoon-jasmine'
   gem 'phantomjs'
+  gem "better_errors"
+  gem "binding_of_caller"
+  gem 'capybara-angular'
 end
+
+ruby "2.1.2"

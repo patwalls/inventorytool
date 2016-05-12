@@ -4,7 +4,7 @@ class Style < ActiveRecord::Base
   belongs_to :type
 
   def min_price
-    type.min_price
+    1
   end
 
 end

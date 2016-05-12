@@ -2,7 +2,6 @@ class Api::ClearanceBatchesController < ApplicationController
   skip_before_filter  :verify_authenticity_token
   def index
     @clearance_batches = ClearanceBatch.all
-    p 'batch index is being called'
     render :json => @clearance_batches
   end
 
@@ -11,18 +10,24 @@ class Api::ClearanceBatchesController < ApplicationController
     render :json => @clearance_batch
   end
 
+
   def update
     @clearance_batch = ClearanceBatch.find(params[:id])
-    @clearance_batch.update_attributes(clearance_batch_params)
-    flash[:alert] = "Clearance Batch Added!!!!"
-    render nothing: true, status: 204
+    if @clearance_batch.update_attributes(clearance_batch_params)
+      render :json => @clearance_batch
+    else
+      render :json => { :errors => @clearance_batch.errors.full_messages }
+    end
   end
 
   def create
     if !params[:csv_batch_file]
-      @batch = ClearanceBatch.new
-      @batch.save
-      render :json => @batch
+      @clearance_batch = ClearanceBatch.new
+      if @clearance_batch.save
+        render :json => @clearance_batch
+      else
+        render :json => { :errors => @clearance_batch.errors.full_messages }
+      end
     else
       clearancing_status = ClearancingService.new.process_file(params[:csv_batch_file].tempfile)
       clearance_batch    = clearancing_status.clearance_batch
@@ -37,7 +42,7 @@ class Api::ClearanceBatchesController < ApplicationController
         clearancing_status.errors.each {|error| alert_messages << error }
       end
       flash[:alert] = alert_messages.join("<br/>") if alert_messages.any?
-      redirect_to "/#/" + ClearanceBatch.all.last.id.to_s
+      redirect_to :clearance_batches
     end
   end
 

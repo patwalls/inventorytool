@@ -9,11 +9,14 @@ class Api::TypeController < ApplicationController
     render :json => @type
   end
 
+
   def update
     @type = Type.find(params[:id])
-    @type.update_attributes(type_params)
-    @type.save!
-    render nothing: true, status: 204
+    if @type.update_attributes(type_params)
+      render :json => @type
+    else
+      render :json => { :errors => @type.errors.full_messages }
+    end
   end
 
   private

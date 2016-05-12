@@ -1,0 +1,36 @@
+<div class='custom-header page-header'>
+  <div class="left-header">
+    <div>
+      <h1 class='batch-header'>
+        <a href='/#'>Inventory Clearance Tool</a>  / <span> Clearance Batches</span>
+      </h1>
+    </div>
+  </div>
+</div>
+
+<%= form_tag('/api/clearance_batches', multipart: true, class: 'form-inline', role: 'form') do %>
+<div class="form-group">
+  <%= label_tag 'csv_batch_file', 'Select batch file' %>
+  <%= file_field_tag 'csv_batch_file', class: 'form-control' %>
+</div>
+<%= button_tag 'upload batch file', class: 'btn btn-primary' %>
+<% end %>
+
+<table class="table table-striped clearance_batches">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Date clearanced</th>
+      <th>Number of items clearanced</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%- @clearance_batches.each do |clearance_batch| -%>
+      <tr>
+        <td><a href='/#/<%= clearance_batch.id %>'>Clearance Batch <%= clearance_batch.id %></a></td>
+        <td><%= l(clearance_batch.created_at, format: :short) %></td>
+        <td><%= clearance_batch.items.count %></td>
+      </tr>
+    <%- end -%>
+  </tbody>
+</table>

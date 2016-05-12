@@ -9,14 +9,15 @@ class Item < ActiveRecord::Base
   scope :sellable, -> { where(status: 'sellable') }
 
   def clearance!
-    update_attributes!(status: 'clearanced',
-                       price_sold: clearance_price)
+    update_attributes!(status: 'clearanced', price_sold: clearance_price, sold_at: Time.new)
+  end
+
+  def min_price
+    1
   end
 
   def unclearance!
-    update_attributes!(status: 'sellable',
-                       price_sold: nil,
-                       clearance_batch_id: nil)
+    update_attributes!(status: 'sellable', price_sold: nil, clearance_batch_id: nil, sold_at: nil)
   end
 
   def clearance_price
@@ -27,14 +28,26 @@ class Item < ActiveRecord::Base
     end
   end
 
-  # def style_type() style.type.name end
-  # def style_name() style.name end
-  # def style_wholesale_price() style.wholesale_price end
-  # def style_retail_price() style.retail_price end
+  def self.query_for_callback(id)
+    Item.select("items.*,
+                 styles.name as style_name,
+                 styles.wholesale_price,
+                 styles.retail_price,
+                 styles.id as style_id,
+                 types.name as type_name
+               ")
+    .joins(:style,:type)
+    .where(id: id)
+    .first
+  end
 
   def as_json(options={})
-    super(:only => [:id,:size,:color,:status,:price_sold,:sold_at,:clearance_batch_id,:name,:wholesale_price,:retail_price,:type_name]
-          # :methods => [:style_type,:style_name,:style_wholesale_price,:style_retail_price]
+    super(:only => [
+      :id,:size,:color,
+      :status,:price_sold,:sold_at,
+      :clearance_batch_id,:style_name,
+      :wholesale_price,:retail_price,:type_name
+    ]
     )
   end
 

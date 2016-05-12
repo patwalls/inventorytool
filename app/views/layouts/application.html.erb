@@ -12,7 +12,7 @@
 
 <div class="container">
 
-  <!-- <%- if flash[:notice] -%>
+  <%- if flash[:notice] -%>
     <div class="alert alert-info" role="alert">
       <%= flash[:notice].html_safe %>
     </div>
@@ -21,7 +21,7 @@
     <div class="alert alert-danger" role="alert">
       <%= flash[:alert].html_safe %>
     </div>
-  <%- end -%> -->
+  <%- end -%>
   <%= yield %>
 </div>
 

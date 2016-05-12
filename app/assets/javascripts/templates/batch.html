@@ -1,35 +1,80 @@
-<div class='custom-header'>
-  <button type="button" class="btn btn-lg btn-primary" ng-click='goToIndex()'>Back to All Items</button>
-  <div class="page-header">
-    <h1>Batch {{ batchId }} <small> {{ getBatchStatus(batchId) }} </small></h1>
+<section class="container toaster">
+  <div data-ng-show="showError" ng-class="{fade:doFade}" class="alert alert-danger"><strong>Error:</strong> {{errorMessage}}</div>
+  <div data-ng-show="showSuccess" ng-class="{fade:doFade}" class="alert alert-success"><strong>Success:</strong> {{successMessage}}</div>
+</section>
+<div class='custom-header page-header'>
+  <div class="left-header">
+    <div>
+      <h1 ng-click='goToIndex()' class='batch-header'>
+        <a>Inventory Clearance Tool</a>  / <span> Batch {{ batchId }}</span>
+      </h1>
+    </div>
+    <span class="label label-{{batchStatus == 'Submitted' ? 'default' : 'success'}}">
+      {{ batchStatus }}
+    </span>
   </div>
-  <button type="button" class="btn btn-lg btn-primary" ng-click="createNewBatch()">New Batch</button>
-  <div class="dropdown">
-      <button type="button" class="btn btn-lg dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></button>
-      <ul class="dropdown-menu" role="menu">
-          <li><a class="dropdown-item" ng-csv='itemsInBatch(batchId)' filename="test.csv">Export CSV</a></li>
-          <li><a ng-click='submitBatch(batchId)' class="dropdown-item">Submit Batch</a></li>
-      </ul>
+  <div class="right-header">
+    <div class='buttons'>
+
+          <div class="dropdown">
+              <button type="button" class="btn btn-lg dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span></button>
+              <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                  <li><a class="dropdown-item"
+                         ng-csv='itemsInBatch(batchId)'
+                         csv-header="['id', 'size', 'color','status','price_sold', 'sold_at', 'clearance_batch_id','name', 'wholesale_price', 'retail_price','type_name']"
+                         filename="clearance_batch_{{batchId}}.csv">
+                         Export CSV
+                      </a>
+                  </li>
+                  <li ng-hide="batchStatus == 'Submitted'"><a  ng-click='submitBatch(batchId)' class="dropdown-item">Submit Batch</a></li>
+              </ul>
+          </div>
+      </div>
   </div>
+
+</div>
+
+<table class='clearance_batches'></table>
+
+<div ng-switch="pageStatus.loading">
+  <div ng-switch-when="true">
+    <div class="sk-folding-cube">
+      <div class="sk-cube1 sk-cube"></div>
+      <div class="sk-cube2 sk-cube"></div>
+      <div class="sk-cube4 sk-cube"></div>
+      <div class="sk-cube3 sk-cube"></div>
+    </div>
+  </div>
+
+<div ng-switch-when="false">
+
+
+<div class="input-group input-group-lg" ng-hide="batchStatus == 'Submitted'">
+  <span class="input-group-btn">
+    <button ng-click='clearanceItem(itemToAdd,batchId)' class="btn btn-primary" type="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+  </span>
+  <input ng-model="itemToAdd" type="text" class="form-control" placeholder="Add Item to Batch {{ batchId}}...">
 </div>
 
 
-
-<input ng-model="itemToAdd" type="text" class="form-control" placeholder="Add Item to Batch {{ batchId}}...">
-<button type="button" class="btn btn-primary" ng-click='clearanceItem(itemToAdd,batchId)'>Add</button>
-<table class='table table-striped'>
+<table class='table clearance_batches'>
   <thead>
     <tr>
-      <th ng-repeat = "(key,value) in items[0]" ng-click="sortGroup(key)" style="color:{{sortSelect == key ? 'red' : 'black'}}"> {{ key }}</th>
-      <th>Delete From Batch</th>
+      <th ng-repeat = "(key,value) in items[0]" ng-click="sortGroup(key)" style="color:{{sortSelect == key ? 'black' : 'black'}}">
+        <a>{{ key }}</a>
+        <span ng-show='sortSelect == key' class="caret"></span>
+      </th>
+      <th ng-hide="batchStatus == 'Submitted'">Delete From Batch</th>
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="item in items | orderBy: sortSelect | filter:{ 'clearance_batch_id': batchId }">
+    <tr ng-repeat="item in items | orderBy: sortSelect | filter:{ 'clearance_batch_id': batchId }" >
         <td ng-repeat="value in item">
           {{ value }}
         </td>
-        <td><button ng-click="unClearanceItem(item.id)" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></td>
+        <td ng-hide="batchStatus == 'Submitted'"><button ng-click="unClearanceItem(item.id)" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></td>
     </tr>
   </tbody>
 </table>
+</div>
+</div>

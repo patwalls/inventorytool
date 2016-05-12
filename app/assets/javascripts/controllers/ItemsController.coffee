@@ -1,26 +1,40 @@
+controllers = angular.module 'controllers', ['itemService','batchService','typeService']
 
-controllers = angular.module 'controllers', ['itemService','batchService','styleService','typeService']
+controllers.controller("ItemsController", [ '$scope', '$routeParams', '$location', '$resource', '$timeout', 'Item','ClearanceBatch','Type'
+  ($scope,$routeParams,$location,$resource,$timeout,Item,ClearanceBatch,Type)->
 
-controllers.controller("ItemsController", [ '$scope', '$routeParams', '$location', '$resource', 'Item','ClearanceBatch','Style','Type'
-  ($scope,$routeParams,$location,$resource,Item,ClearanceBatch,Style,Type)->
+    $scope.pageStatus = {}
 
-    $scope.items = Item.all {}, () -> console.log($scope.items)
-    $scope.clearance_batches = ClearanceBatch.all {}, () -> console.log($scope.clearance_batches)
-    $scope.types = Type.all {}, () -> console.log($scope.types)
+    getData = ->
+      $scope.pageStatus.loading = true
+      $scope.clearance_batches = ClearanceBatch.all {}, () ->
+      $scope.types = Type.all {}, () ->
+      Item.all {}, (data) ->
+        $scope.items = data
+        $scope.pageStatus.loading = false
+      return
+
+    getData()
+
+    $scope.alert = ''
+
+    setAlert = (alert) ->
+
+    $scope.goToBatch = (batchId) ->
+      batch = '/' + batchId
+      $location.path batch
+      return
 
     $scope.updateMinPrice = (id, min_price) ->
       $scope.type = Type.get({ id: id }, ->
         $scope.type.min_price = min_price
         $scope.type.$update ((data) ->
-          console.log 'success'
-          console.log data
           return
         ), (error) ->
-          console.log error
+
           return
         return
       )
-      console.log id + ' - ' + min_price
       return
 
     $scope.sortGroup = (key) ->
@@ -29,7 +43,6 @@ controllers.controller("ItemsController", [ '$scope', '$routeParams', '$location
 
     $scope.createNewBatch = ->
       $scope.entry = ClearanceBatch.create((data) ->
-        console.log data
         batch = '/' + data.id
         $location.path batch
         return
@@ -37,52 +50,113 @@ controllers.controller("ItemsController", [ '$scope', '$routeParams', '$location
       return
 
     $scope.clearanceItem = (scopeId, batchId) ->
+      batch = batchId.choice
       $scope.entry = Item.get({ id: scopeId }, ->
-        $scope.entry.clearance_batch_id = batchId
+        $scope.entry.clearance_batch_id = batch
         $scope.entry.$update ((data) ->
-          $scope.entry = Item.get({ id: scopeId }, ->
-            $scope.items[scopeId - 1] = $scope.entry
-            return
-          )
+          $scope.updateItem(data, scopeId)
+          $scope.toaster('Item ' + data.id + ' was added to Batch ' + batch + '.')
           return
         ), (error) ->
-          console.log error
+          $scope.toaster('Item could not be clearanced.',true)
           return
         return
       )
       return
 
+    $scope.updateItem = (data, id) ->
+      angular.forEach $scope.items, (item, index) ->
+        if +id is item.id
+          scopeItem = $scope.items.indexOf(item)
+          $scope.items[scopeItem] = data
+        return
+
+
     $scope.changeView = (batchId) ->
       batch = '/' + batchId
       $location.path batchId
       return
+
+      $scope.showError = false
+      $scope.showSuccess = false
+      $scope.doFade = false
+
+    $scope.toaster = (message,error) ->
+      #reset
+      if error
+        $scope.showSuccess = false
+        $scope.showError = false
+        $scope.doFade = false
+        $scope.showError = true
+        $scope.errorMessage = message
+      else
+        $scope.showError = false
+        $scope.showSuccess = false
+        $scope.doFade = false
+        $scope.showSuccess = true
+        $scope.successMessage = message
+      $timeout (->
+        $scope.doFade = true
+        return
+      ), 2500
+      return
 ])
 
+controllers.controller("BatchController", [ '$scope', '$routeParams', '$location', '$timeout','$resource', 'Item','ClearanceBatch'
+  ($scope,$routeParams,$location,$timeout,$resource,Item,ClearanceBatch)->
 
-controllers.controller("BatchController", [ '$scope', '$routeParams', '$location', '$resource', 'Item','ClearanceBatch'
-  ($scope,$routeParams,$location,$resource,Item,ClearanceBatch)->
+    $scope.pageStatus = {}
+    $scope.batchId = $routeParams.id
 
-    $scope.items = Item.all {}, () -> console.log($scope.items)
-    $scope.clearance_batches = ClearanceBatch.all {}, () -> console.log($scope.clearance_batches)
-
-    $scope.exportData = ->
-      console.log 'a test'
-      alasql 'SELECT * INTO XLSX("mydata.xlsx",{headers:true}) FROM ?', [ $scope.testItems ]
+    getData = ->
+      $scope.pageStatus.loading = true
+      ClearanceBatch.all {}, (data) ->
+        $scope.clearance_batches = data
+        Item.all {}, (data) ->
+          $scope.items = data
+          getBatchStatus($scope.batchId)
+          $scope.pageStatus.loading = false
+          return
       return
 
-    $scope.getBatchStatus = (batchId) ->
+    getData()
+
+    getBatchStatus = (batchId) ->
       status = ''
       $scope.clearance_batches.forEach (batch) ->
-        if parseInt(batchId) is batch.id
-          console.log 'this is working'
-          if batch.submitted then (status = 'Submitted') else (status = 'In Progress')
+        if +batchId is batch.id
+          if batch.submitted then ($scope.batchStatus = 'Submitted') else ($scope.batchStatus = 'In Progress')
         return
-      status
+
+    $scope.clearanceItem = (scopeId, batchId) ->
+      $scope.entry = Item.get({ id: scopeId }, ->
+        if alreadyClearanced($scope.entry)
+          return
+        $scope.entry.clearance_batch_id = batchId
+        $scope.entry.$update ((data) ->
+          $scope.toaster('Item ' + data.id + ' was added to Batch ' + batchId + '.')
+          $scope.items[scopeId - 1] = data
+          return
+        ), (error) ->
+          $scope.toaster('Item ' + $scope.entry.id + ' was clearanced.')
+          return
+        return
+      )
+      return
+
+    alreadyClearanced = (item) ->
+        if (item.clearance_batch_id)
+          $scope.toaster('Item ' + $scope.entry.id + ' has already been clearanced.',true)
+          true
+
+    $scope.exportData = ->
+      alasql 'SELECT * INTO XLSX("mydata.xlsx",{headers:true}) FROM ?', [ $scope.testItems ]
+      return
 
     $scope.itemsInBatch = (batchId) ->
       itemsInBatch = []
       $scope.items.forEach (item) ->
-        if parseInt(batchId) == item.clearance_batch_id
+        if +batchId == item.clearance_batch_id
           itemsInBatch.push item
         return
       itemsInBatch
@@ -91,10 +165,12 @@ controllers.controller("BatchController", [ '$scope', '$routeParams', '$location
       $scope.entry = ClearanceBatch.get({ id: batchId }, ->
         $scope.entry.submitted = 'true'
         $scope.entry.$update ((data) ->
-          $scope.getBatchStatus
+          $scope.clearance_batches[+batchId - 1] = data
+          getBatchStatus(batchId)
+          $scope.toaster('Batch ' + batchId + ' was submitted.')
           return
         ), (error) ->
-          console.log error
+          $scope.toaster('Batch could not be submitted.',true)
           return
         return
       )
@@ -104,25 +180,55 @@ controllers.controller("BatchController", [ '$scope', '$routeParams', '$location
       $scope.sortSelect = key
       return
 
-    $scope.batchId = $routeParams.id
-
     $scope.unClearanceItem = (scopeId) ->
       $scope.entry = Item.get({ id: scopeId }, ->
         $scope.entry.$update ((data) ->
           $scope.entry = Item.get({ id: scopeId }, ->
-            $scope.items[scopeId - 1] = $scope.entry
+            $scope.updateItem($scope.entry,scopeId)
+            $scope.toaster('Item ' + $scope.entry.id + ' was removed from Batch '+ $scope.batchId + '.')
             return
           )
           return
-        ), (error) ->
-          console.log error
+        ), (xhr) ->
+          $scope.toaster('Item' + $scope.entry.id + ' could not be unclearanced.')
           return
         return
       )
       return
 
+    $scope.updateItem = (data, id) ->
+      angular.forEach $scope.items, (item, index) ->
+        if +id is item.id
+          scopeItem = $scope.items.indexOf(item)
+          $scope.items[scopeItem] = data
+        return
+
     $scope.goToIndex = ->
       batch = '/'
       $location.path batch
+      return
+
+      $scope.showError = false
+      $scope.showSuccess = false
+      $scope.doFade = false
+
+    $scope.toaster = (message,error) ->
+      #reset
+      if error
+        $scope.showSuccess = false
+        $scope.showError = false
+        $scope.doFade = false
+        $scope.showError = true
+        $scope.errorMessage = message
+      else
+        $scope.showError = false
+        $scope.showSuccess = false
+        $scope.doFade = false
+        $scope.showSuccess = true
+        $scope.successMessage = message
+      $timeout (->
+        $scope.doFade = true
+        return
+      ), 2000
       return
 ])

@@ -2,14 +2,15 @@ receta = angular.module('receta',[
   'templates',
   'ngRoute',
   'ngResource',
-  'controllers',
   'services',
+  'controllers',
   'ngSanitize',
   'ngCsv'
 ])
 
 receta.config([ '$routeProvider','$httpProvider'
   ($routeProvider,$httpProvider)->
+
     $routeProvider
       .when '/',
         templateUrl: "index.html"
